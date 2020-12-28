@@ -48,13 +48,13 @@ class Game extends React.Component {
       history: [{
         squares: Array(9).fill(null)
       }],
-      stepNumber: 0,
+      moveNumber: 0,
       xIsNext: true
     }
   }
 
   handleClick(i) {
-    const history = this.state.history.slice(0, this.state.stepNumber + 1)
+    const history = this.state.history.slice(0, this.state.moveNumber + 1)
     const current = history[history.length - 1]
     const squares = current.squares.slice()
     if(calculateWinner(squares) || squares[i]) {
@@ -65,30 +65,28 @@ class Game extends React.Component {
       history: history.concat([{
         squares: squares
       }]),
-      stepNumber: history.length,
+      moveNumber: history.length,
       xIsNext: !this.state.xIsNext
     })
   }
 
-  jumpTo(stepNumber) {
+  jumpToAfter(moveNumber) {
     this.setState({
-      stepNumber: stepNumber,
-      xIsNext: (stepNumber % 2) === 0
+      moveNumber: moveNumber,
+      xIsNext: (moveNumber % 2) === 0
     })
   }
 
   render() {
     const history = this.state.history
-    const current = history[this.state.stepNumber]
+    const current = history[this.state.moveNumber]
     const winner = calculateWinner(current.squares)
 
-    const moves = history.map((step, stepNumber) => {
-      const desc = stepNumber ?
-        'Go to move #' + stepNumber :
-        'Go to game start'
+    const moves = history.slice(1).map((board, moveIndex) => {
+      let moveNumber = moveIndex + 1
       return (
-        <li key={stepNumber}>
-          <button onClick={() => this.jumpTo(stepNumber)}>{desc}</button>
+        <li key={moveNumber}>
+          <button onClick={() => this.jumpToAfter(moveNumber)}>{'Go to after move #' + moveNumber}</button>
         </li>
       )
     })
@@ -109,7 +107,8 @@ class Game extends React.Component {
           />
         </div>
         <div className="game-info">
-          <div>{status}</div>
+          <div className="status">{status}</div>
+          <button onClick={() => this.jumpToAfter(0)}>Go to game start</button>
           <ol>{moves}</ol>
         </div>
       </div>
