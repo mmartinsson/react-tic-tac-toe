@@ -46,24 +46,26 @@ class Game extends React.Component {
     super(props)
     this.state = {
       history: [{
-        squares: Array(9).fill(null)
+        squares: Array(9).fill(null),
+        lastSelectedIndex: null
       }],
       moveNumber: 0,
       xIsNext: true
     }
   }
 
-  handleClick(i) {
+  handleClick(selectedIndex) {
     const history = this.state.history.slice(0, this.state.moveNumber + 1)
     const current = history[history.length - 1]
     const squares = current.squares.slice()
-    if(calculateWinner(squares) || squares[i]) {
+    if(calculateWinner(squares) || squares[selectedIndex]) {
       return
     }
-    squares[i] = this.state.xIsNext ? 'X' : 'O'
+    squares[selectedIndex] = this.state.xIsNext ? 'X' : 'O'
     this.setState({
       history: history.concat([{
-        squares: squares
+        squares: squares,
+        lastSelectedIndex: selectedIndex
       }]),
       moveNumber: history.length,
       xIsNext: !this.state.xIsNext
@@ -83,10 +85,18 @@ class Game extends React.Component {
     const winner = calculateWinner(current.squares)
 
     const moves = history.slice(1).map((board, moveIndex) => {
-      let moveNumber = moveIndex + 1
+      const moveNumber = moveIndex + 1
+      const player = moveNumber % 2 ? 'X' : 'Y'
+      const column = (board.lastSelectedIndex % 3) + 1
+      const row = Math.floor(board.lastSelectedIndex / 3) + 1
+
       return (
         <li key={moveNumber}>
-          <button onClick={() => this.jumpToAfter(moveNumber)}>{'Go to after move #' + moveNumber}</button>
+          <div>Player {player} selected column {column} row {row}</div>
+          <button
+              className="history-button"
+              onClick={() => this.jumpToAfter(moveNumber)}>{'Go to this move'}
+          </button>
         </li>
       )
     })

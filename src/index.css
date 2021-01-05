@@ -32,6 +32,11 @@ ol, ul {
   width: 34px;
 }
 
+.history-button {
+  margin-top: 5px;
+  margin-bottom: 10px;
+}
+
 .square:focus {
   outline: none;
 }
