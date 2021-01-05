@@ -100,9 +100,10 @@ class Game extends React.Component {
       const player = moveNumber % 2 ? 'X' : 'O'
       const column = (board.lastSelectedIndex % 3) + 1
       const row = Math.floor(board.lastSelectedIndex / 3) + 1
+      const className = moveIndex === this.state.moveNumber-1 ? "selected" : "not-selected"
 
       return (
-        <li key={moveNumber}>
+        <li className={className} key={moveNumber}>
           <div>Player {player} selected column {column} row {row}</div>
           <button
               className="history-button"
