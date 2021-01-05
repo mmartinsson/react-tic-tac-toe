@@ -77,14 +77,27 @@ class Game extends React.Component {
     })
   }
 
+  status(squares) {
+    const winner = calculateWinner(squares)
+    const moveNumber = squares.filter(Boolean).length
+    const nextPlayer = moveNumber % 2 ? 'O' : 'X'
+
+    if(winner) {
+      return `Player ${winner} won!`
+    } else if(moveNumber === 9) {
+      return 'The match was a draw'
+    } else {
+      return `Next player: ${nextPlayer}`
+    }
+  }
+
   render() {
     const history = this.state.history
     const current = history[this.state.moveNumber]
-    const winner = calculateWinner(current.squares)
 
     const moves = history.slice(1).map((board, moveIndex) => {
       const moveNumber = moveIndex + 1
-      const player = moveNumber % 2 ? 'X' : 'Y'
+      const player = moveNumber % 2 ? 'X' : 'O'
       const column = (board.lastSelectedIndex % 3) + 1
       const row = Math.floor(board.lastSelectedIndex / 3) + 1
 
@@ -99,13 +112,6 @@ class Game extends React.Component {
       )
     })
 
-    let status
-    if(winner) {
-      status = 'Winner: ' + winner
-    } else {
-      status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O')
-    }
-
     return (
       <div className="game">
         <div className="game-board">
@@ -115,7 +121,7 @@ class Game extends React.Component {
           />
         </div>
         <div className="game-info">
-          <div className="status">{status}</div>
+          <div className="status">{this.status(current.squares)}</div>
           <button onClick={() => this.jumpToAfter(0)}>Go to game start</button>
           <ol>{moves}</ol>
         </div>
