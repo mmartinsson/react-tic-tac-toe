@@ -2,6 +2,8 @@
 
 This is my solution for the extra improvements suggested at the end of this awesome [Tutorial: Intro to React](https://reactjs.org/tutorial/tutorial.html).
 
+Check the site out at [https://mmartinsson.github.io/react-tic-tac-toe/](https://mmartinsson.github.io/react-tic-tac-toe/)
+
 ## Original improvements
 
 In case the original page gets changed these were the improvements when I played around with them. They are in order of increasing difficulty:
@@ -16,3 +18,9 @@ In case the original page gets changed these were the improvements when I played
 ## My own Improvements
 
 I also did some improvements of my own. See the other [Issues](https://github.com/mmartinsson/react-tic-tac-toe/issues)
+
+## Deploy
+
+To deploy to GitHub pages:
+    
+    npm run deploy
