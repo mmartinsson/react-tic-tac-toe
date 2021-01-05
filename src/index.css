@@ -32,6 +32,10 @@ ol, ul {
   width: 34px;
 }
 
+.square-highlight {
+  border: 2px solid #333;
+}
+
 .history-button {
   margin-top: 5px;
   margin-bottom: 10px;
