@@ -47,13 +47,13 @@ class Game extends React.Component {
         squares: Array(9).fill(null),
         lastSelectedIndex: null
       }],
-      moveNumber: 0,
+      currentMoveNumber: 0,
       xIsNext: true
     }
   }
 
   handleClick(selectedIndex) {
-    const history = this.state.history.slice(0, this.state.moveNumber + 1)
+    const history = this.state.history.slice(0, this.state.currentMoveNumber + 1)
     const current = history[history.length - 1]
     const squares = current.squares.slice()
     if(calculateWinner(squares) || squares[selectedIndex]) {
@@ -65,66 +65,67 @@ class Game extends React.Component {
         squares: squares,
         lastSelectedIndex: selectedIndex
       }]),
-      moveNumber: history.length,
+      currentMoveNumber: history.length,
       xIsNext: !this.state.xIsNext
     })
   }
 
-  jumpToAfter(moveNumber) {
+  jumpToAfter(targetMoveNumber) {
     this.setState({
-      moveNumber: moveNumber,
-      xIsNext: (moveNumber % 2) === 0
+      currentMoveNumber: targetMoveNumber,
+      xIsNext: (targetMoveNumber % 2) === 0
     })
   }
 
   status(squares) {
     const winner = calculateWinner(squares)
-    const moveNumber = squares.filter(Boolean).length
-    const nextPlayer = moveNumber % 2 ? 'O' : 'X'
+    const numberOfMoves = squares.filter(Boolean).length
+    const nextPlayer = numberOfMoves % 2 ? 'O' : 'X'
 
     if(winner) {
       return `Player ${winner} won!`
-    } else if(moveNumber === 9) {
+    } else if(numberOfMoves === 9) {
       return 'The match was a draw'
     } else {
       return `Next player: ${nextPlayer}`
     }
   }
 
-  render() {
-    const history = this.state.history
-    const current = history[this.state.moveNumber]
-
-    const moves = history.slice(1).map((board, moveIndex) => {
-      const moveNumber = moveIndex + 1
-      const player = moveNumber % 2 ? 'X' : 'O'
-      const column = (board.lastSelectedIndex % 3) + 1
-      const row = Math.floor(board.lastSelectedIndex / 3) + 1
-      const className = moveIndex === this.state.moveNumber-1 ? "selected" : "not-selected"
+  historyMoves(history) {
+    return history.slice(1).map((historyBoard, historyMoveIndex) => {
+      const historyMoveNumber = historyMoveIndex + 1
+      const player = historyMoveNumber % 2 ? 'X' : 'O'
+      const column = (historyBoard.lastSelectedIndex % 3) + 1
+      const row = Math.floor(historyBoard.lastSelectedIndex / 3) + 1
+      const className = historyMoveNumber === this.state.currentMoveNumber ? "selected" : "not-selected"
 
       return (
-        <li className={className} key={moveNumber}>
-          <div>Player {player} selected column {column} row {row}</div>
-          <button
-              className="history-button"
-              onClick={() => this.jumpToAfter(moveNumber)}>{'Go to this move'}
-          </button>
-        </li>
+          <li className={className} key={historyMoveNumber}>
+            <div>Player {player} selected column {column} row {row}</div>
+            <button
+                className="history-button"
+                onClick={() => this.jumpToAfter(historyMoveNumber)}>{'Go to this move'}
+            </button>
+          </li>
       )
     })
+  }
+
+  render() {
+    const currentBoard = this.state.history[this.state.currentMoveNumber]
 
     return (
       <div className="game">
         <div className="game-board">
           <Board
-            squares={current.squares}
+            squares={currentBoard.squares}
             onClick={(i) => this.handleClick(i)}
           />
         </div>
         <div className="game-info">
-          <div className="status">{this.status(current.squares)}</div>
+          <div className="status">{this.status(currentBoard.squares)}</div>
           <button onClick={() => this.jumpToAfter(0)}>Go to game start</button>
-          <ol>{moves}</ol>
+          <ol>{this.historyMoves(this.state.history)}</ol>
         </div>
       </div>
     );
